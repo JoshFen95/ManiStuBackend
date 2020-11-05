@@ -3,6 +3,7 @@ const expressJwt = require('express-jwt');
 const config = require('../config/config');
 const checkToken = expressJwt({ secret: config.secrets.jwt, algorithms: ['HS256']});
 const User = require('../models/Teacher'); 
+const { response } = require('express');
 
 exports.decodeToken = () => {
   return function(req, res, next) {
@@ -12,13 +13,16 @@ exports.decodeToken = () => {
     // so checkToken can see it and decode it
     console.log('Here');
     console.log(req.query.access_token);
-    if (req.query && req.query.hasOwnProperty('access_token')) {
-      req.headers.authorization = 'Bearer ' + req.query.access_token;
+    // if (req.query && req.query.hasOwnProperty('access_token')) {
+    //   req.headers.authorization = 'Bearer ' + req.query.access_token;
+    // }
+    if (req.headers.authorization) {
+      req.headers.authorization = 'Bearer ' + req.headers.authorization;
     }
     // this will call next if token is valid
     // and send error if its not. It will attached
     // the decoded token to req.user
-    checkToken(req, res, next);
+    checkToken(req, res, next)
   };
 };
 

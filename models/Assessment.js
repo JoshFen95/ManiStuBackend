@@ -14,12 +14,12 @@ const assessmentSchema = new mongoose.Schema({
     teacherName:{
         type: String,
         required: true,
-        min: 6
+        min: 6,
     },
     subject:{
         type: String,
         required: true,
-        min: 6
+        min: 6,
     },
     date: {
         type: Date,

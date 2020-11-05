@@ -1,1 +1,1 @@
-# student-system
+# ManiStuBackend API

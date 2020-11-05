@@ -3,6 +3,8 @@ const Student = require("../models/Student");
 const Assessment = require("../models/Assessment");
 const auth = require("../auth/auth");
 const logger = require("../utils/logger");
+const objectId = require("objectid");
+const { response } = require("express");
 
 //Register a student //
 exports.register = async (req, res) => {
@@ -35,112 +37,137 @@ exports.getOne = async (req, res) => {
 };
 
 // Add an assessment for a student //
-exports.addAssessment =  async (req, res) => {
-    const studentId = req.params.id;
-    logger.log(studentId);
-    const student = await Student.findOne({ _id: studentId });
-  
-    //Create a new assessment and assign it to student
-    const assessment = new Assessment({
-      assessmentName: req.body.assessmentName,
-      studentName: req.body.studentName,
-      teacherName: req.body.teacherName,
-      subject: req.body.subject,
-      rating: req.body.rating,
-      comments: req.body.comments,
-    });
-    logger.log(assessment);
-    try {
-      await student.assessments.push(assessment);
-      await student.save();
-      //   res.send({studentId: savedStudent._id});
-      res.send({ student: student });
-    } catch (err) {
-      res.status(400).send(err);
-    }
-  };
+exports.addAssessment = async (req, res) => {
+  const studentId = req.params.id;
+  logger.log(studentId);
+  const student = await Student.findOne({ _id: studentId });
 
-  // Delete an assessment //  \\ METHOD NOT DELETING
+  //Create a new assessment and assign it to student
+  const assessment = new Assessment({
+    assessmentName: req.body.assessmentName,
+    studentName: req.body.studentName,
+    teacherName: req.body.teacherName,
+    subject: req.body.subject,
+    rating: req.body.rating,
+    comments: req.body.comments,
+  });
+  logger.log(assessment);
+  try {
+    await student.assessments.push(assessment);
+    await student.save();
+    //   res.send({studentId: savedStudent._id});
+    res.send({ student: student });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+
+// Delete an assessment //  \\ METHOD NOT DELETING
 exports.deleteAssessmentById = async (req, res) => {
-    const studentId = req.params.id;
-    const assessmentId = req.params.assessId;
-    const student = await Student.findOne({ _id: studentId });
-    logger.log(student);
-    const index = await getAssessmentIndex(studentId, assessmentId);
-    logger.log("index");
-    logger.log(index);
-    // console.log(student.assessments);
-  
-    try {
-      // let assessment = student.assessments[0];
-      student.assessments.splice(index,1);
-      student.markModified("assessments");
-      await student.save();
-      res.send({ student: student });
-    } catch (err) {
-      res.status(400).send(err);
-      logger.log(err);
-    }
-  };
+  const studentId = req.params.id;
+  const assessmentId = req.params.assessId;
+  const student = await Student.findOne({ _id: studentId });
+  logger.log(student);
+  const index = await getAssessmentIndex(studentId, assessmentId);
+  logger.log("index");
+  logger.log(index);
+  // console.log(student.assessments);
 
-  // Edit an assessment assigned to a user //
+  try {
+    // let assessment = student.assessments[0];
+    student.assessments.splice(index, 1);
+    student.markModified("assessments");
+    await student.save();
+    res.send({ student: student });
+  } catch (err) {
+    res.status(400).send(err);
+    logger.log(err);
+  }
+};
+
+// Edit an assessment assigned to a user //
+// exports.editAssessment = async (req, res) => {
+//     const studentId = req.params.id;
+//     const assessmentId = req.params.assessId;
+//     const student = await Student.findOne({ _id: studentId });
+//     const index = await getAssessmentIndex(studentId, assessmentId);
+//     logger.log(student.assessments[index]);
+
+//     try {
+//       // Updates the assessment from the details in the request body but keeps the same ID passed in the query params
+//       student.assessments[index] = {
+//         _id: assessmentId,
+//         assessmentName: req.body.assessmentName,
+//         studentName: req.body.studentName,
+//         teacherName: req.body.teacherName,
+//         subject: req.body.subject,
+//         rating: req.body.rating,
+//         comments: req.body.comments,
+//       };
+//       student.markModified("assessments");
+
+//       const updated = await student.save();
+//       logger.log(updated);
+
+//       res.send(updated);
+//     } catch (err) {
+//       logger.error(err);
+//       res.status(400).send(err);
+//     }
+//   };
+
 exports.editAssessment = async (req, res) => {
-    const studentId = req.params.id;
-    const assessmentId = req.params.assessId;
-    const student = await Student.findOne({ _id: studentId });
-    const index = await getAssessmentIndex(studentId, assessmentId);
-    logger.log(student.assessments[index]);
-  
-    try {
-      // Updates the assessment from the details in the request body but keeps the same ID passed in the query params
-      student.assessments[index] = {
-        _id: assessmentId,
-        assessmentName: req.body.assessmentName,
-        studentName: req.body.studentName,
-        teacherName: req.body.teacherName,
-        subject: req.body.subject,
-        rating: req.body.rating,
-        comments: req.body.comments,
-      };
-      student.markModified("assessments");
-  
-      const updated = await student.save();
-      logger.log(updated);
-  
-      res.send(updated);
-    } catch (err) {
-      logger.error(err);
-      res.status(400).send(err);
-    }
-  };
+  const studentId = req.params.id;
+  const assessmentId = req.params.assessId;
+  const student = await Student.findOne({ _id: studentId });
+  const index = await getAssessmentIndex(studentId, assessmentId);
+  logger.log(student.assessments[index]);
 
-  // Returns the index of a student's specified assessment //
+  const currentAssessment = student.assessments[index];
+  const updatedData = {
+    rating: req.body.rating,
+    comments: req.body.comments,
+  };
+  try {
+    student.assessments[index] = { ...currentAssessment, ...updatedData };
+    student.markModified("assessments");
+
+    const updated = await student.save();
+    logger.log(updated);
+
+    res.send(updated);
+  } catch (err) {
+    logger.error(err);
+    res.status(400).send(err);
+  }
+};
+
+// Returns the index of a student's specified assessment //
 async function getAssessmentIndex(studentId, assessmentId) {
-    try {
-      const student = await Student.findOne({ _id: studentId });
-      const assessments = student.assessments;
-      let assessmentIndex = null;
-  
-      assessments.forEach((assessment, index) => {
-        if (assessment._id == assessmentId) {
-          assessmentIndex = index;
-        }
-      });
-  
-      return assessmentIndex;
-    } catch (err) {
-      return err;
-    }
-  };
+  try {
+    const student = await Student.findOne({ _id: studentId });
+    const assessments = student.assessments;
+    let assessmentIndex = null;
 
-  exports.getAll = async (req, res) => {
+    assessments.forEach((assessment, index) => {
+      if (assessment._id == assessmentId) {
+        assessmentIndex = index;
+      }
+    });
 
-    try{
-   const students = await Student.find();
-  //  console.log(students);
-  //  return students;
-  res.send(({students: students}));
-    } catch(err){
-      res.status(400).send(err);
-    }
-  };
+    return assessmentIndex;
+  } catch (err) {
+    return err;
+  }
+}
+
+exports.getAll = async (req, res) => {
+  try {
+    const students = await Student.find();
+    //  console.log(students);
+    //  return students;
+    res.send({ students: students });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
