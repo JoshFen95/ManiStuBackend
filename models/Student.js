@@ -12,6 +12,10 @@ const studentSchema = new mongoose.Schema({
         required: true
     },
     assessments: [],
+    
+    imageUrl:{
+        type: String
+    }
 
 });
 

@@ -12,7 +12,11 @@ const TeacherSchema = new Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  
+  imageUrl:{
+    type: String
+}
 });
 
 // middleware that will run before a document

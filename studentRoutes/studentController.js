@@ -1,10 +1,6 @@
-const router = require("express").Router();
 const Student = require("../models/Student");
 const Assessment = require("../models/Assessment");
-const auth = require("../auth/auth");
 const logger = require("../utils/logger");
-const objectId = require("objectid");
-const { response } = require("express");
 
 //Register a student //
 exports.register = async (req, res) => {
@@ -52,12 +48,24 @@ exports.addAssessment = async (req, res) => {
     comments: req.body.comments,
   });
   logger.log(assessment);
+
+  if (
+    !assessment.teacherName ||
+    !assessment.subject ||
+    !assessment.rating ||
+    !assessment.comments
+  ) {
+    console.log("Please enter all fields");
+    return res.status(400).send("Please enter all fields");
+  }
+
   try {
     await student.assessments.push(assessment);
     await student.save();
     //   res.send({studentId: savedStudent._id});
     res.send({ student: student });
   } catch (err) {
+    // errorHandler.addAssessmentError(err, req)
     res.status(400).send(err);
   }
 };
@@ -171,3 +179,4 @@ exports.getAll = async (req, res) => {
     res.status(400).send(err);
   }
 };
+

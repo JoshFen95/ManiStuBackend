@@ -11,7 +11,7 @@ const checkUser = [auth.decodeToken(), auth.getFreshUser()];
 //Register a student //
 router.post("/register", studentController.register);
 
-router.get("/all", checkUser, studentController.getAll);
+router.get("/all", studentController.getAll);
 
 // Get student data //
 router.get("/:id", checkUser, studentController.getOne);

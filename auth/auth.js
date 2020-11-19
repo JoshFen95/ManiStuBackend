@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
 const config = require('../config/config');
 const checkToken = expressJwt({ secret: config.secrets.jwt, algorithms: ['HS256']});
-const User = require('../models/Teacher'); 
+const Teacher = require('../models/Teacher'); 
 const { response } = require('express');
 
 exports.decodeToken = () => {
@@ -30,9 +30,9 @@ exports.getFreshUser = () => {
   return function(req, res, next) {
     console.log('hererhrehreherher')
     console.log(req);
-    User.findById(req.user._id)
-      .then(function(user) {
-        if (!user) {
+    Teacher.findById(req.user._id)
+      .then(function(teacher) {
+        if (!teacher) {
           // if no user is found it was not
           // it was a valid JWT but didn't decode
           // to a real user in our DB. Either the user was deleted
@@ -42,7 +42,7 @@ exports.getFreshUser = () => {
         } else {
           // update req.user with fresh user from
           // stale token data
-          req.user = user;
+          req.teacher = teacher;
           next();
         }
       }, function(err) {
@@ -65,21 +65,21 @@ exports.verifyUser = () => {
 
     // look user up in the DB so we can check
     // if the passwords match for the username
-    User.findOne({teacherName: teacherName})
-      .then(function(user) {
-        if (!user) {
+    Teacher.findOne({teacherName: teacherName})
+      .then(function(teacher) {
+        if (!teacher) {
           res.status(401).send('No user with the given username');
         } else {
           // checking the passowords here
-          if (!user.authenticate(password)) {
+          if (!teacher.authenticate(password)) {
             res.status(401).send('Wrong password');
           } else {
             // if everything is good,
             // then attach to req.user
             // and call next so the controller
             // can sign a token from the req.user._id
-            req.user = user;
-            console.log(req.user)
+            req.teacher = teacher;
+            console.log(req.teacher)
             next();
           }
         }
