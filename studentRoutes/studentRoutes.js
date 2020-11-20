@@ -25,24 +25,4 @@ router.delete("/:id/delete/:assessId", studentController.deleteAssessmentById);
 // Edit an assessment assigned to a user //
 router.post("/:id/:assessId", studentController.editAssessment);
 
-// router.route('/:id')
-//   .get(studentController.getOne)
-//   .post("/assess",checkUser, studentController.addAssessment)
-//   .delete("/delete/:assessId", checkUser, studentController.deleteAssessmentById)
-//   .post("/:assessId", checkUser, studentController.editAssessment)
-
 module.exports = router;
-
-
-// update student infomation
-
-
-// https://app.pluralsight.com/course-player?clipId=61422221-7630-4066-9d03-e57b52a4c6b6
-// above video at 3:50, maybe be able to refactor some methods with funtions
-// look in userModel for crypting password
-
-
-// maybe regiser the port in the config file.
-// implement parentsthen parents to view their child?? 
-
-//REWACTCH EERCISE 12 SOLUTION AND ADD A .ME METHODS AND THE REMOVE PASSWORD METHOD IN THAT VIDEO

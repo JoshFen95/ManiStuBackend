@@ -3,7 +3,6 @@ const expressJwt = require('express-jwt');
 const config = require('../config/config');
 const checkToken = expressJwt({ secret: config.secrets.jwt, algorithms: ['HS256']});
 const Teacher = require('../models/Teacher'); 
-const { response } = require('express');
 
 exports.decodeToken = () => {
   return function(req, res, next) {

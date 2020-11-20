@@ -30,13 +30,6 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(override());
 
-// app.set("views", path.join(__dirname, "views"));
-// app.set("view engine", "pug");
-// app.use(express.static(path.join(__dirname, "public")));
-// app.use(express.urlencoded({ extended: true }));
-
-
-
 //Route Handling
 app.use("/student", studentRoutes);
 app.use('/auth', authRoutes);

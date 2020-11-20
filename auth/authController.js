@@ -7,7 +7,6 @@ exports.signin = function(req, res, next) {
   // and send it back for the client to consume
   var token = signToken(req.teacher._id);
   console.log(req.headers);
-  console.log("LALALALA")
   console.log(req.teacher)
   res.json({token: token, teacher: req.teacher.toJson()});
 };
