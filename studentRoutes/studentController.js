@@ -71,10 +71,7 @@ exports.deleteAssessmentById = async (req, res) => {
   const studentId = req.params.id;
   const assessmentId = req.params.assessId;
   const student = await Student.findOne({ _id: studentId });
-  logger.log(student);
   const index = await getAssessmentIndex(studentId, assessmentId);
-  logger.log("index");
-  logger.log(index);
 
   try {
     student.assessments.splice(index, 1);
@@ -110,7 +107,7 @@ exports.editAssessment = async (req, res) => {
     res.send(updated);
   } catch (err) {
     logger.error(err);
-    res.status(400).send(err);
+    res.status(400).send('The assessment could not be updated.');
   }
 };
 
