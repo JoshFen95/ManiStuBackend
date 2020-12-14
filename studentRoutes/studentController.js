@@ -19,13 +19,30 @@ exports.register = async (req, res) => {
 };
 
 // Get student data //
-exports.getOne = async (req, res) => {
+exports.getStudentById = async (req, res) => {
   const studentId = req.params.id;
 
   try {
     const student = await Student.findOne({ _id: studentId });
     res.send({ student: student });
   } catch (err) {
+    res.status(400).send(err);
+  }
+};
+
+exports.getStudentByName = async (req, res) => {
+  console.log('hi')
+  const studentName = req.params.studentName;
+  studentName.toString();
+  console.log(studentName);
+  console.log("i am here");
+
+  try {
+    const student = await Student.findOne({ name: studentName });
+    console.log(student);
+    res.send({ student: student });
+  } catch (err) {
+    logger.error(err);
     res.status(400).send(err);
   }
 };

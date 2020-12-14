@@ -14,8 +14,8 @@ router.post("/register", studentController.register);
 router.get("/all", studentController.getAll);
 
 // Get student data //
-router.get("/:id", checkUser, studentController.getOne);
-
+router.get("/:id", checkUser, studentController.getStudentById);
+router.get("/studentName/:studentName", checkUser,  studentController.getStudentByName)
 // Add an assessment for a student //
 router.post("/:id/assess", studentController.addAssessment);
 
