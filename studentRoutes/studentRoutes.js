@@ -11,16 +11,16 @@ const checkUser = [auth.decodeToken(), auth.getFreshUser()];
 //Register a student //
 router.post("/register", studentController.register);
 
-router.get("/all", studentController.getAll);
+router.get("/all", checkUser,studentController.getAll);
 
 // Get student data //
 router.get("/:id", checkUser, studentController.getStudentById);
 router.get("/studentName/:studentName", checkUser,  studentController.getStudentByName)
 // Add an assessment for a student //
-router.post("/:id/assess", studentController.addAssessment);
+router.post("/:id/assess", checkUser,studentController.addAssessment);
 
 // Delete an assessment // 
-router.delete("/:id/delete/:assessId", studentController.deleteAssessmentById);
+router.delete("/:id/delete/:assessId", checkUser,studentController.deleteAssessmentById);
 
 // Edit an assessment assigned to a user //
 router.post("/:id/:assessId", studentController.editAssessment);
